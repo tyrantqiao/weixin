@@ -37,4 +37,9 @@ public class WeiXinController {
         return "";
     }
 
+    @RequestMapping(value = "/",method = RequestMethod.GET)
+    public String home(){
+        return "home";
+    }
+
 }

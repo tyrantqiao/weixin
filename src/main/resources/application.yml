@@ -1,4 +1,12 @@
 spring:
   datasource:
-    url: http://127.0.0.1:3306/weixin
-    
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql//127.0.0.1:3306/weixin
+    username: qiao
+    password: qiao
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+server:
+  port: 80
