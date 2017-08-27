@@ -25,9 +25,9 @@ public class WeiXinController {
         String[] confirmList = new String[]{token, timestamp, nonce};
         Arrays.sort(confirmList);
 
-        StringBuffer confirmBuffer = new StringBuffer();
-        for (int i = 0; i < confirmList.length; i++) {
-            confirmBuffer.append(confirmList[i]);
+        StringBuilder confirmBuffer = new StringBuilder();
+        for (String aConfirmList : confirmList) {
+            confirmBuffer.append(aConfirmList);
         }
 
         if (signature.equals(Hash.getSha1(confirmBuffer.toString()))) {
