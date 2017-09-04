@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Random;
+
 /**
  * @author qiao
  * email tyrantqiao@icloud.com

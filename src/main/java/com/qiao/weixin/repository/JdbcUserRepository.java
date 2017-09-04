@@ -28,7 +28,7 @@ public class JdbcUserRepository implements UserRepository {
 //    }
 
     public User save(User user){
-        jdbcTemplate.update("insert into PUBLIC.USER(username,password,email)"
+        jdbcTemplate.update("insert into weixin.user(username,password,email)"
                                     +"VALUES(?,?,?)",
                                         user.getUsername(),
                                         user.getPassword(),
@@ -38,7 +38,7 @@ public class JdbcUserRepository implements UserRepository {
 
     public User findByUsername(String username){
         return jdbcTemplate.queryForObject(
-                "select id, username, password, email from PUBLIC.USER where username=?",
+                "select id, username, password, email from weixin.User where username=?",
                 new UserRowMapper(),
                 username);
         //(A--sql,B--RowMapper,C--supplement for A)
