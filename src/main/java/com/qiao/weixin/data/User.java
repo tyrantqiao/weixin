@@ -19,24 +19,31 @@ import java.util.Random;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue
     private long id;
 
     @NotNull
-    @Size(min=2,max=16)
+    @Size(min=2,max=16,message = "size 2~16")
     private String username;
 
     @NotNull
-    @Size(min=2,max=16)
+    @Size(min=2,max=16,message = "size 2~16")
     private String password;
 
-    @Email
+    @Email(message = "email format please")
     private String email;
+
+    @Override
+    public String toString() {
+        return String.format("User[id:%d, name:%s, email:%s]",id,username,email);
+    }
 
     public User(){}
 
     public User(String username, String password, String email) {
-        this(new Random().nextLong(),username,password,email);
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public User(long id, String userName, String password, String email) {

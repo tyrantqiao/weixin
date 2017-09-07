@@ -1,7 +1,14 @@
 package com.qiao.weixin.controller;
 
+import com.qiao.weixin.Exception.UserException;
+import com.qiao.weixin.data.Result;
+import com.qiao.weixin.data.ResultEnum;
 import com.qiao.weixin.data.User;
 import com.qiao.weixin.repository.UserRepository;
+import com.qiao.weixin.utils.ResultUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -21,12 +28,13 @@ import javax.validation.Valid;
 @ComponentScan(basePackages = {"data"})
 public class UserController {
     private UserRepository userRepository;
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-//    TODO Repository how to inject, make it not null...CrudRepository.interface seems well
+//   Repository how to inject, make it not null...CrudRepository.interface seems well [finished]...
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerPage(Model model) {
@@ -37,7 +45,8 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String processRegister(@Valid User user, Errors errors) {
         if (errors.hasErrors()) {
-            System.out.println("got error:" + errors.getFieldError().getDefaultMessage());
+            logger.error("got error:" + errors.getFieldError().getDefaultMessage());
+            throw new UserException(ResultEnum.REGISTER_ERROR);
         }
 
         userRepository.save(user);
@@ -46,7 +55,7 @@ public class UserController {
 
     @RequestMapping("/{username}")
     public String showUserProfile(@PathVariable String username, Model model) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findUserByUsername(username);
         model.addAttribute(user);
         return "profile";
     }
@@ -60,23 +69,14 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String processLogin(@Valid User user, Errors errors) {
         if (errors.hasErrors()) {
-            System.out.println("input type's error:" + errors.getFieldError().getDefaultMessage());
+            logger.error("input type's error:" + errors.getFieldError().getDefaultMessage());
             return "/login";
         }
-        User searchUser = null;
-        try {
-            searchUser = userRepository.findByUsername(user.getUsername());
-            //cannot use == to discuss the string thing
-            if (!searchUser.getPassword().equals(user.getPassword())) {
-                System.out.println("search:" + searchUser.getPassword());
-                System.out.println("user:" + user.getPassword());
-                return "/register";
-            }
-        } catch (Exception e) {
-            System.out.println("Exception, might be not catch the thing" + e.getMessage());
-        }
-        //TODO make the actual error message
 
-        return "redirect:/user/" + searchUser.getUsername();
+        if (ResultUtil.confirm_login(user.getPassword(), userRepository.findUserByUsername(user.getUsername()).getPassword()))
+            return "redirect:/user/" + user.getUsername();
+        else
+            logger.error(ResultEnum.LOGIN_ERROR.getMsg());
+            throw new UserException(ResultEnum.LOGIN_ERROR);
     }
 }

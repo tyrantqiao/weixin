@@ -6,9 +6,30 @@ package com.qiao.weixin.data;
  * 2017/9/4 23:38
  */
 public class Result<T> {
-     private String msg;
-     private int code;
-     private T data;
+    private String msg;
+    private int code;
+    private ResultEnum resultEnum;
+    private T data;
+
+    public Result() {
+    }
+
+    public Result(ResultEnum resultEnum) {
+        this.resultEnum = resultEnum;
+    }
+
+    public Result(int code, String msg) {
+        this.code=code;
+        this.msg=msg;
+    }
+
+    public ResultEnum getResultEnum() {
+        return resultEnum;
+    }
+
+    public void setResultEnum(ResultEnum resultEnum) {
+        this.resultEnum = resultEnum;
+    }
 
     public String getMsg() {
         return msg;
